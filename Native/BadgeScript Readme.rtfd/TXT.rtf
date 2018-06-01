@@ -1,0 +1,126 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf100
+{\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fnil\fcharset0 Menlo-Regular;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;\red27\green31\blue34;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgray\c0\c0;\cssrgb\c14118\c16078\c18039;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 BadgeScript\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+\ul 1. Configuration\ulnone \
+ANDROID = Path to the android directory starting from the BadgeScript folder\
+ANDROID_FILE_START = How to file icon filename start (leave blank to copy all mipmap files)\
+ANDROID_FLAVOR = The flavor the badge will be applied to\
+\
+IOS = Path to the iOS directory starting from the BadgeScript folder, going to the xcassets folder\
+IOS_FILE_START= ow to file icon filename start (leave blank to copy all files)\
+IOS_ICON_SET = Name of the icon set\
+IOS_SCHEME = The scheme/build configuration name\
+\
+FASTLANE_LANE = The name of the fastlane lane to use\
+\
+\ul 2. Usage\ulnone \
+1. Configure the variables in \'931. Configuration\'94 and FASTFILE.\
+2. run the script\
+\
+If you get new icons, place them in the original mipmap/appicon folder (not in the beta or the flavor/scheme name you chose!) and run the script again.\
+\
+We will name the flavours/schemes \'93beta\'94 in these examples.\
+\
+\ul 3. How it works\ulnone \
+BadgeScript copies the original icon files to the \'93beta\'94 flavor/scheme folders and then adds a \'93BETA\'94 badge to them.\
+\
+Make sure you have a flavor and scheme setup in your Android/iOS project with the appropriate name (see examples in 6 and 7).\
+\
+\ul 4. Prerequisites\
+\ulnone These prerequisites need to be installed on your system only \ul once\ulnone \
+Homebrew\
+Homebrew: rbenv\
+Homebrew: ruby-build\
+Homebrew: fastlane\
+rbenv: 2.4.1\
+fastlane: badge\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 \cb3 \ul \ulc2 5. Steps to install prerequisites\ulnone \
+\pard\pardeftab720\qc\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"\kerning1\expnd0\expndtw0 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \expnd0\expndtw0\kerning0
+xcode-select --install\
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"\
+brew update\
+brew install openssl\
+brew install rbenv\
+brew install ruby-build\
+rbenv init\
+RUBY_CONFIGURE_OPTS="--with-lib-dir=$(brew --prefix openssl)/lib --with-include-dir=$(brew --prefix openssl)/include" rbenv install 2.4.1\
+rbenv global 2.4.1\
+\cf2 \kerning1\expnd0\expndtw0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \expnd0\expndtw0\kerning0
+Add following lines to $HOME/.bash_profile, this way the system ruby is masked:\
+export PATH="$HOME/.rbenv/bin:/usr/local/opt/openssl/bin:$PATH"\
+eval "$(rbenv init -)"\cf2 \kerning1\expnd0\expndtw0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 \
+Reboot your machine\
+gem update\
+gem install fastlane\
+fastlane add_plugin badge\
+\
+\ul 6. Android flavor example\ulnone \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1 \cf2 buildTypes \{\
+    beta \{\
+        debuggable true\
+    \}\
+\}\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0 \cf2 \
+Copy the default main/res/mipmap-* folders to beta/res/mipmap-*\
+\
+\ul 7. iOS scheme example\ulnone \
+Full info:\
+https://engineering.circle.com/different-app-icons-for-your-ios-beta-dev-and-release-builds-af4d209cdbfd\
+\
+In short:\
+- Create a Beta build configuration\
+- Create a Beta scheme that uses the Beta build configuration\
+- Add user-defined setting in target build settings called \'93BUNDLE_ID_SUFFIX\'94\
+- BUNDLE_ID SUFFIX values: Beta = .beta, Release = leave empty, Test = .test, \'85\
+- Go to Asset Compiler - Options and find Asset Catalog App Icon Set Name\
+Set the value to AppIcon$\{BUNDLE_ID_SUFFIX\}\
+- In your xcassets, create an App Icon set for each category.\
+Beta: AppIcon.beta\
+Test: AppIcon.test\
+Release: AppIcon (so no .*** here!)\
+\'85\
+\
+\ul 8. Configure your fastlane Fastfile\
+\ulnone - Replace the beta in the paths (glob) by your chosen scheme/flavor name\
+- Adjust the paths (glob) to fit your project name and structure\ul \
+\
+\ulnone lane :beta do\
+  add_badge(\
+   glob: "/move-to-cure-android/app/src/beta/res/mipmap-*dpi/*.\{png,PNG\}")\
+add_badge(\
+   glob: "/move-to-cure-ios/MoveToCure-iOS/Assets.xcassets/AppIcon.beta.appiconset/*.\{png,PNG\}")\
+end\
+\
+The fastfile is in the fastlane folder included in this zip, place the folder in the root of your project with the script.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2 \cf0 \cb1 {{\NeXTGraphic Screen Shot 2017-11-16 at 10.31.27.png \width4080 \height2200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0 \cf2 \cb3 \
+}
