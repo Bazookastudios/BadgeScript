@@ -13,14 +13,13 @@ ANDROID_FLAVOR="debug"
 
 #### iOS ####
 # Path to iOS xcassets, starting at where the script is located
-IOS="iOS/Resources/ImagesS2R.xcassets"
+IOS="iOS/BadgeApp/BadgeApp/Assets.xcassets"
 # Name of the icon file (without extension)
-IOS_FILE_START="Icon"
+IOS_FILE_START="appicon"
 # Name of the icon set to use
-IOS_ICON_SET="AppIconS2R"
+IOS_ICON_SET="AppIcon"
 # The scheme name where the icon will be applied to
 IOS_SCHEME="Debug"
-
 #### GENERAL ####
 # The name that will be used in Fastlane's fastfile
 FASTLANE_LANE="debugMyApp"

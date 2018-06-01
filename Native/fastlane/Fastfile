@@ -4,5 +4,5 @@ lane :debugMyApp do
   add_badge(
    glob: "/Android/app/src/debug/res/mipmap-*dpi/*.{png,PNG}", alpha:true)
 add_badge(
-   glob: "/iOS/Resources/ImagesS2R.xcassets/AppIconS2R.Debug.appiconset/*.{png,PNG}", alpha:true)
+   glob: "/iOS/BadgeApp/BadgeApp/Assets.xcassets/AppIcon.Debug.appiconset/*.{png,PNG}", alpha:true)
 end
